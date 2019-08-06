@@ -1,9 +1,9 @@
 package parser
 
 import (
-	"testing"
 	"monkey/ast"
 	"monkey/lexer"
+	"testing"
 )
 
 func TestLetStatements(t *testing.T) {
@@ -22,7 +22,7 @@ func TestLetStatements(t *testing.T) {
 	}
 	if len(program.Statements) != 3 {
 		t.Fatalf("program.Statements does not contain 3 statements. got=%d",
-		len(program.Statements))
+			len(program.Statements))
 	}
 
 	tests := []struct {
@@ -80,7 +80,7 @@ func TestReturnStatements(t *testing.T) {
 	checkParserErrors(t, p)
 	if len(program.Statements) != 3 {
 		t.Fatalf("program.Statements does not contain 3 statements. got=%d",
-		len(program.Statements))
+			len(program.Statements))
 	}
 
 	for _, stmt := range program.Statements {
