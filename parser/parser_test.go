@@ -116,7 +116,6 @@ func TestIdentifierExpression(t *testing.T) {
 			program.Statements[0])
 	}
 
-
 	testLiteralExpression(t, stmt.Expression, "foobar")
 }
 
@@ -184,11 +183,11 @@ func TestParsingPrefixExpression(t *testing.T) {
 	}
 }
 
-func TestParsingInfixExpression (t *testing.T) {
-	infixTests := []struct{
-		input string
-		leftValue interface{}
-		operator string
+func TestParsingInfixExpression(t *testing.T) {
+	infixTests := []struct {
+		input      string
+		leftValue  interface{}
+		operator   string
 		rightValue interface{}
 	}{
 		{"5 + 5;", 5, "+", 5},
@@ -227,8 +226,8 @@ func TestParsingInfixExpression (t *testing.T) {
 }
 
 func TestOperatorPrecedenceParsing(t *testing.T) {
-	tests := []struct{
-		input string
+	tests := []struct {
+		input    string
 		expected string
 	}{
 		{
@@ -346,15 +345,15 @@ func TestBooleanExpression(t *testing.T) {
 
 	bo, ok := stmt.Expression.(*ast.Boolean)
 	if !ok {
-	        t.Fatalf("exp is not ast.InfixExpression. got=%T", stmt.Expression)
+		t.Fatalf("exp is not ast.InfixExpression. got=%T", stmt.Expression)
 	}
 
 	if bo.Value != true {
-	        t.Errorf("ident.Value not %t. got=%t", true, bo.Value)
+		t.Errorf("ident.Value not %t. got=%t", true, bo.Value)
 	}
 	if bo.TokenLiteral() != "true" {
-	        t.Errorf("ident.TokenLiteral not %s. got=%s", "true",
-	                bo.TokenLiteral())
+		t.Errorf("ident.TokenLiteral not %s. got=%s", "true",
+			bo.TokenLiteral())
 	}
 }
 
@@ -375,9 +374,9 @@ func TestIfExpression(t *testing.T) {
 	}
 
 	tests := []struct {
-		expectedLeftValue string
-		expectedOperator string
-		expectedRightValue string
+		expectedLeftValue   string
+		expectedOperator    string
+		expectedRightValue  string
 		expectedConsequence string
 		expectedAlternative interface{}
 	}{
@@ -451,7 +450,7 @@ func TestFunctionLiteralParsing(t *testing.T) {
 
 func TestFunctionParameterParsing(t *testing.T) {
 	tests := []struct {
-		input string
+		input          string
 		expectedParams []string
 	}{
 		{input: "fn() {};", expectedParams: []string{}},
@@ -474,7 +473,7 @@ func TestFunctionParameterParsing(t *testing.T) {
 		}
 
 		for i, ident := range tt.expectedParams {
-			testLiteralExpression(t,function.Parameters[i], ident)
+			testLiteralExpression(t, function.Parameters[i], ident)
 		}
 	}
 }
@@ -624,7 +623,7 @@ func testIfExpression(
 	}
 
 	if alternativeLiteral == nil {
-		if ifExp.Alternative != nil  {
+		if ifExp.Alternative != nil {
 			t.Errorf("ifExp.Alternative.Statements was not nil. got=%+v", ifExp.Alternative)
 		}
 	} else {
