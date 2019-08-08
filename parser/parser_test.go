@@ -358,6 +358,50 @@ func TestBooleanExpression(t *testing.T) {
 	}
 }
 
+func TestIfExpression(t *testing.T) {
+	input := `
+	if (x < y) { x }
+	if (x < y) { x } else { y }
+	`
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	if len(program.Statements) != 2 {
+		t.Fatalf("program.Statements does not contain %d statements. got=%d\n",
+			2, len(program.Statements))
+	}
+
+	tests := []struct {
+		expectedLeftValue string
+		expectedOperator string
+		expectedRightValue string
+		expectedConsequence string
+		expectedAlternative interface{}
+	}{
+		{"x", "<", "y", "x", nil},
+		{"x", "<", "y", "x", "y"},
+	}
+
+	for i, stmt := range program.Statements {
+		exp, ok := stmt.(*ast.ExpressionStatement)
+		if !ok {
+			t.Fatalf("stmt is not ast.ExpressionStatement. got=%T", stmt)
+		}
+
+		testIfExpression(t, exp.Expression,
+			tests[i].expectedLeftValue,
+			tests[i].expectedOperator,
+			tests[i].expectedRightValue,
+			tests[i].expectedConsequence,
+			tests[i].expectedAlternative,
+		)
+
+	}
+}
+
 func testIntegerLiteral(t *testing.T, il ast.Expression, value int64) bool {
 	integ, ok := il.(*ast.IntegerLiteral)
 	if !ok {
@@ -464,6 +508,57 @@ func testInfixExpression(
 
 	if !testLiteralExpression(t, opExp.Right, right) {
 		return false
+	}
+
+	return true
+}
+
+func testIfExpression(
+	t *testing.T,
+	exp ast.Expression,
+	leftValue string,
+	operator string,
+	rightValue string,
+	consequenceLiteral string,
+	alternativeLiteral interface{},
+) bool {
+	ifExp, ok := exp.(*ast.IfExpression)
+	if !ok {
+		t.Fatalf("exp is not ast.IfExpression. got=%T", exp)
+	}
+
+	if !testInfixExpression(t, ifExp.Condition, leftValue, operator, rightValue) {
+		return false
+	}
+
+	if len(ifExp.Consequence.Statements) != 1 {
+		t.Errorf("consequence is not 1 statements. got=%d\n",
+			len(ifExp.Consequence.Statements))
+	}
+
+	consequence, ok := ifExp.Consequence.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("Consequence.Statements[0] is not ast.ExpressionStatement. got=%T",
+			ifExp.Consequence.Statements[0])
+	}
+
+	if !testLiteralExpression(t, consequence.Expression, consequenceLiteral) {
+		return false
+	}
+
+	if alternativeLiteral == nil {
+		if ifExp.Alternative != nil  {
+			t.Errorf("ifExp.Alternative.Statements was not nil. got=%+v", ifExp.Alternative)
+		}
+	} else {
+		alternative, ok := ifExp.Alternative.Statements[0].(*ast.ExpressionStatement)
+		if !ok {
+			t.Fatalf("Alternative.Statements[0] is not ast.ExpressionStatement. got=%T",
+				ifExp.Alternative.Statements[0])
+		}
+		if !testLiteralExpression(t, alternative.Expression, alternativeLiteral) {
+			return false
+		}
 	}
 
 	return true
