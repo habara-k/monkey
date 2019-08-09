@@ -10,9 +10,9 @@ import (
 
 func TestLetStatements(t *testing.T) {
 	tests := []struct {
-		input string
+		input              string
 		expectedIdentifier string
-		expectedValue interface{}
+		expectedValue      interface{}
 	}{
 		{"let x = 5;", "x", 5},
 		{"let y = true;", "y", true},
@@ -70,7 +70,7 @@ func testLetStatement(t *testing.T, s ast.Statement, name string) bool {
 
 func TestReturnStatements(t *testing.T) {
 	tests := []struct {
-		input string
+		input         string
 		expectedValue interface{}
 	}{
 		{"return 5;", 5},
@@ -381,9 +381,8 @@ func TestBooleanExpression(t *testing.T) {
 
 func TestIfExpression(t *testing.T) {
 	input := `
-	if (x < y) { x }
-	if (x < y) { x } else { y }
-	`
+if (x < y) { x }
+if (x < y) { x } else { y }`
 
 	l := lexer.New(input)
 	p := New(l)
