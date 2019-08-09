@@ -1,10 +1,10 @@
 package ast
 
 import (
-	"monkey/token"
-
 	"bytes"
 	"strings"
+
+	"monkey/token"
 )
 
 type Node interface {
@@ -242,8 +242,8 @@ func (fl *FunctionLiteral) String() string {
 }
 
 type CallExpression struct {
-	Token token.Token // '(' トークン
-	Function Expression // Identifier または FunctionLiteral
+	Token     token.Token // '(' トークン
+	Function  Expression  // Identifier または FunctionLiteral
 	Arguments []Expression
 }
 

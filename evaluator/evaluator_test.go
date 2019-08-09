@@ -1,16 +1,16 @@
 package evaluator
 
 import (
+	"testing"
+
 	"monkey/lexer"
 	"monkey/object"
 	"monkey/parser"
-
-	"testing"
 )
 
 func TestEvalIntegerExpression(t *testing.T) {
 	tests := []struct {
-		input string
+		input    string
 		expected int64
 	}{
 		{"5", 5},
@@ -38,7 +38,7 @@ func TestEvalIntegerExpression(t *testing.T) {
 
 func TestEvalBooleanExpression(t *testing.T) {
 	tests := []struct {
-		input string
+		input    string
 		expected bool
 	}{
 		{"true", true},
@@ -53,7 +53,7 @@ func TestEvalBooleanExpression(t *testing.T) {
 
 func TestBangOperator(t *testing.T) {
 	tests := []struct {
-		input string
+		input    string
 		expected bool
 	}{
 		{"!true", false},
@@ -90,7 +90,7 @@ func TestBangOperator(t *testing.T) {
 
 func TestIfElseExpressions(t *testing.T) {
 	tests := []struct {
-		input string
+		input    string
 		expected interface{}
 	}{
 		{"if (true) { 10 }", 10},
@@ -115,7 +115,7 @@ func TestIfElseExpressions(t *testing.T) {
 
 func TestReturnStatements(t *testing.T) {
 	tests := []struct {
-		input string
+		input    string
 		expected int64
 	}{
 		{"return 10;", 10},
@@ -123,13 +123,13 @@ func TestReturnStatements(t *testing.T) {
 		{"return 2 * 5; 9;", 10},
 		{"9; return 2 * 5; 9;", 10},
 		{`
-		if (10 > 1) {
-			if (10 > 1) {
-				return 10;
-			}
-		}
-		return 1;
-		`, 10},
+if (10 > 1) {
+	if (10 > 1) {
+		return 10;
+	}
+}
+return 1;`,
+			10},
 	}
 
 	for _, tt := range tests {
@@ -140,7 +140,7 @@ func TestReturnStatements(t *testing.T) {
 
 func TestErrorHandling(t *testing.T) {
 	tests := []struct {
-		input string
+		input           string
 		expectedMessage string
 	}{
 		{
@@ -169,25 +169,23 @@ func TestErrorHandling(t *testing.T) {
 		},
 		{
 			`
-			if (10 > 1) {
-				if (10 > 1) {
-					return true + false;
-				}
-			}
-			return 1;
-			`,
+if (10 > 1) {
+	if (10 > 1) {
+		return true + false;
+	}
+}
+return 1;`,
 			"unknown operator: BOOLEAN + BOOLEAN",
 		},
 		{
 			`
-			if (10 > 1) {
-				if (10 > 1) {
-					true + false;
-					return 10;
-				}
-			}
-			return 1;
-			`,
+if (10 > 1) {
+	if (10 > 1) {
+		true + false;
+		return 10;
+	}
+}
+return 1;`,
 			"unknown operator: BOOLEAN + BOOLEAN",
 		},
 		{
@@ -231,7 +229,7 @@ func TestErrorHandling(t *testing.T) {
 
 func TestLetStatements(t *testing.T) {
 	tests := []struct {
-		input string
+		input    string
 		expected int64
 	}{
 		{"let a = 5; a;", 5},
@@ -272,7 +270,7 @@ func TestFunctionObject(t *testing.T) {
 
 func TestFunctionApplication(t *testing.T) {
 	tests := []struct {
-		input string
+		input    string
 		expected int64
 	}{
 		{"let identity = fn(x) { x; }; identity(5);", 5},

@@ -8,8 +8,8 @@ import (
 )
 
 var (
-	NULL = &object.Null{}
-	TRUE = &object.Boolean{Value: true}
+	NULL  = &object.Null{}
+	TRUE  = &object.Boolean{Value: true}
 	FALSE = &object.Boolean{Value: false}
 )
 
@@ -170,7 +170,7 @@ func evalInfixExpression(
 	operator string,
 	left, right object.Object,
 ) object.Object {
-	switch  {
+	switch {
 	case left.Type() == object.INTEGER_OBJ && right.Type() == object.INTEGER_OBJ:
 		return evalIntegerInfixExpression(operator, left, right)
 	case operator == "==":
