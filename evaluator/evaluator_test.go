@@ -251,6 +251,9 @@ func TestFunctionObject(t *testing.T) {
 	input := "fn(x) { x + 2; };"
 
 	evaluated := testEval(input)
+	if evaluated == nil {
+		t.Fatalf("evaluation failed")
+	}
 	fn, ok := evaluated.(*object.Function)
 	if !ok {
 		t.Errorf("object is not Function. got=%T (%+v)", evaluated, evaluated)
@@ -357,6 +360,10 @@ func TestBuiltinFunctions(t *testing.T) {
 	for _, tt := range tests {
 		evaluated := testEval(tt.input)
 
+		if evaluated == nil {
+			t.Fatalf("evaluation failed")
+		}
+
 		switch expected := tt.expected.(type) {
 		case int:
 			testIntegerObject(t, evaluated, int64(expected))
@@ -380,6 +387,9 @@ func TestArrayLiterals(t *testing.T) {
 	input := "[1, 2 * 2, 3 + 3]"
 
 	evaluated := testEval(input)
+	if evaluated == nil {
+		t.Fatalf("evaluation failed")
+	}
 	result, ok := evaluated.(*object.Array)
 	if !ok {
 		t.Errorf("object is not Array. got=%T (%+v)", evaluated, evaluated)
