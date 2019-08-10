@@ -76,6 +76,7 @@ func TestReturnStatements(t *testing.T) {
 		{"return 5;", 5},
 		{"return 10;", 10},
 		{"return 114514;", 114514},
+		{"return true;", true},
 	}
 
 	for _, tt := range tests {
@@ -126,7 +127,7 @@ func TestIdentifierExpression(t *testing.T) {
 			program.Statements[0])
 	}
 
-	testLiteralExpression(t, stmt.Expression, "foobar")
+	testIdentifier(t, stmt.Expression, "foobar")
 }
 
 func TestIntegerLiteralExpression(t *testing.T) {
@@ -147,7 +148,7 @@ func TestIntegerLiteralExpression(t *testing.T) {
 			program.Statements[0])
 	}
 
-	testLiteralExpression(t, stmt.Expression, 5)
+	testIntegerLiteral(t, stmt.Expression, 5)
 }
 
 func TestParsingPrefixExpression(t *testing.T) {
@@ -526,8 +527,8 @@ func TestFunctionLiteralParsing(t *testing.T) {
 			len(function.Parameters))
 	}
 
-	testLiteralExpression(t, function.Parameters[0], "x")
-	testLiteralExpression(t, function.Parameters[1], "y")
+	testIdentifier(t, function.Parameters[0], "x")
+	testIdentifier(t, function.Parameters[1], "y")
 
 	if len(function.Body.Statements) != 1 {
 		t.Fatalf("function.Body.Statements has not 1 statements. got=%d\n",
@@ -573,7 +574,7 @@ func TestFunctionParameterParsing(t *testing.T) {
 		}
 
 		for i, ident := range tt.expectedParams {
-			testLiteralExpression(t, function.Parameters[i], ident)
+			testIdentifier(t, function.Parameters[i], ident)
 		}
 	}
 }
@@ -611,7 +612,7 @@ func TestCallExpressionParsing(t *testing.T) {
 		t.Fatalf("wrong length of arguments. got=%d", len(exp.Arguments))
 	}
 
-	testLiteralExpression(t, exp.Arguments[0], 1)
+	testIntegerLiteral(t, exp.Arguments[0], 1)
 	testInfixExpression(t, exp.Arguments[1], 2, "*", 3)
 	testInfixExpression(t, exp.Arguments[2], 4, "+", 5)
 }
@@ -663,7 +664,7 @@ func TestParsingArrayLiterals(t *testing.T) {
 		t.Fatalf("len(array.Elements) not 3. got=%d", len(array.Elements))
 	}
 
-	testLiteralExpression(t, array.Elements[0], 1)
+	testIntegerLiteral(t, array.Elements[0], 1)
 	testInfixExpression(t, array.Elements[1], 2, "*", 2)
 	testInfixExpression(t, array.Elements[2], 3, "+", 3)
 }
@@ -687,7 +688,7 @@ func TestParsingIndexExpression(t *testing.T) {
 		t.Fatalf("exp not *ast.IndexExpression. got=%T", stmt.Expression)
 	}
 
-	if !testLiteralExpression(t, indexExp.Left, "myArray") {
+	if !testIdentifier(t, indexExp.Left, "myArray") {
 		return
 	}
 
