@@ -342,6 +342,15 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`len("one", "two")`, "wrong number of arguments. got=2, want=1"},
 		{`len([1, 2, 3])`, 3},
 		{`let arr = [1, 2, 3]; len(arr)`, 3},
+		{`first([1, 2, "3"])`, 1},
+		{`let arr = [1, 2, 3]; first(arr)`, 1},
+		{`first([])`, nil}, // TODO: new error
+		{`last([1, 2, 3])`, 3},
+		{`let arr = [1, 2, 3]; last(arr)`, 3},
+		{`last([])`, nil}, // TODO: new error
+		{`rest([1, 2, 3])`, []int64{2, 3}},
+		{`let arr = [1, 2, 3]; rest(rest(arr))`, []int64{3}},
+		{`rest([])`, nil}, // TODO: new error
 	}
 
 	for _, tt := range tests {
@@ -350,6 +359,8 @@ func TestBuiltinFunctions(t *testing.T) {
 		switch expected := tt.expected.(type) {
 		case int:
 			testIntegerObject(t, evaluated, int64(expected))
+		case []int64:
+			testArrayObject(t, evaluated, expected)
 		case string:
 			errObj, ok := evaluated.(*object.Error)
 			if !ok {
@@ -460,6 +471,30 @@ func testIntegerObject(t *testing.T, obj object.Object, expected int64) bool {
 		t.Errorf("object has wrong value. got=%d, want=%d",
 			result.Value, expected)
 		return false
+	}
+
+	return true
+}
+
+func testArrayObject(t *testing.T, obj object.Object, expected []int64) bool {
+	result, ok := obj.(*object.Array)
+	if !ok {
+		t.Errorf("object is not Array. got=%T (%+v)", obj, obj)
+		return false
+	}
+
+	arr := result.Elements
+	if len(arr) != len(expected) {
+		return false
+	}
+	for i, elem := range arr {
+		integ, ok := elem.(*object.Integer)
+		if !ok {
+			return false
+		}
+		if integ.Value != expected[i] {
+			return false;
+		}
 	}
 
 	return true
