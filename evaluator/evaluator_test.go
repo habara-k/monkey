@@ -340,6 +340,18 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`len("hello world")`, 11},
 		{`len(1)`, "argument to `len` not supported, got=INTEGER"},
 		{`len("one", "two")`, "wrong number of arguments. got=2, want=1"},
+		{`len([1, 2, 3])`, 3},
+		{`let arr = [1, 2, 3]; len(arr)`, 3},
+		{`first([1, 2, "3"])`, 1},
+		{`let arr = [1, 2, 3]; first(arr)`, 1},
+		{`first([])`, nil}, // TODO: new error
+		{`last([1, 2, 3])`, 3},
+		{`let arr = [1, 2, 3]; last(arr)`, 3},
+		{`last([])`, nil}, // TODO: new error
+		{`rest([1, 2, 3])`, []int64{2, 3}},
+		{`let arr = [1, 2, 3]; rest(rest(arr))`, []int64{3}},
+		{`rest([])`, nil}, // TODO: new error
+		{`push([1, 2, 3], 4)`, []int64{1, 2, 3, 4}},
 	}
 
 	for _, tt := range tests {
@@ -348,6 +360,8 @@ func TestBuiltinFunctions(t *testing.T) {
 		switch expected := tt.expected.(type) {
 		case int:
 			testIntegerObject(t, evaluated, int64(expected))
+		case []int64:
+			testArrayObject(t, evaluated, expected)
 		case string:
 			errObj, ok := evaluated.(*object.Error)
 			if !ok {
@@ -381,6 +395,64 @@ func TestArrayLiterals(t *testing.T) {
 	testIntegerObject(t, result.Elements[2], 6)
 }
 
+func TestArrayIndexExpressions(t *testing.T) {
+	tests := []struct {
+		input string
+		expected interface{}
+	}{
+		{
+			"[1, 2, 3][0]",
+			1,
+		},
+		{
+			"[1, 2, 3][1]",
+			2,
+		},
+		{
+			"[1, 2, 3][2]",
+			3,
+		},
+		{
+			"let i = 0; [1][i];",
+			1,
+		},
+		{
+			"[1, 2, 3][1 + 1]",
+			3,
+		},
+		{
+			"let myArray = [1, 2, 3] myArray[2]",
+			3,
+		},
+		{
+			"let myArray = [1, 2, 3] myArray[0] + myArray[1] + myArray[2]",
+			6,
+		},
+		{
+			"let myArray = [1, 2, 3]; let i = myArray[0]; myArray[i];",
+			2,
+		},
+		{
+			"[1, 2, 3][3]",
+			nil, // TODO: return bad access error
+		},
+		{
+			"[1, 2, 3][-1]",
+			nil, // TODO: return bad access error
+		},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		integer, ok := tt.expected.(int)
+		if ok {
+			testIntegerObject(t, evaluated, int64(integer))
+		} else {
+			testNullObject(t, evaluated)
+		}
+	}
+}
+
 func testEval(input string) object.Object {
 	l := lexer.New(input)
 	p := parser.New(l)
@@ -400,6 +472,30 @@ func testIntegerObject(t *testing.T, obj object.Object, expected int64) bool {
 		t.Errorf("object has wrong value. got=%d, want=%d",
 			result.Value, expected)
 		return false
+	}
+
+	return true
+}
+
+func testArrayObject(t *testing.T, obj object.Object, expected []int64) bool {
+	result, ok := obj.(*object.Array)
+	if !ok {
+		t.Errorf("object is not Array. got=%T (%+v)", obj, obj)
+		return false
+	}
+
+	arr := result.Elements
+	if len(arr) != len(expected) {
+		return false
+	}
+	for i, elem := range arr {
+		integ, ok := elem.(*object.Integer)
+		if !ok {
+			return false
+		}
+		if integ.Value != expected[i] {
+			return false;
+		}
 	}
 
 	return true
