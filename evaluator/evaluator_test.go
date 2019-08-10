@@ -351,6 +351,7 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`rest([1, 2, 3])`, []int64{2, 3}},
 		{`let arr = [1, 2, 3]; rest(rest(arr))`, []int64{3}},
 		{`rest([])`, nil}, // TODO: new error
+		{`push([1, 2, 3], 4)`, []int64{1, 2, 3, 4}},
 	}
 
 	for _, tt := range tests {
