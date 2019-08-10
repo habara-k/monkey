@@ -71,7 +71,7 @@ var builtins = map[string]*object.Builtin{
 
 			arr, ok := args[0].(*object.Array)
 			if !ok {
-				return newError("argument to `first` must be ARRAY, got %s",
+				return newError("argument to `rest` must be ARRAY, got %s",
 					args[0].Type())
 			}
 
@@ -94,7 +94,7 @@ var builtins = map[string]*object.Builtin{
 
 			arr, ok := args[0].(*object.Array)
 			if !ok {
-				return newError("argument to `first` must be ARRAY, got %s",
+				return newError("first argument to `push` must be ARRAY, got %s",
 					args[0].Type())
 			}
 
