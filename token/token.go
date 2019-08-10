@@ -11,8 +11,8 @@ const (
 	ILLEGAL = "ILLEGAL"
 	EOF     = "EOF"
 
-	IDENT = "IDENT" // add, foobar, x, y, ...
-	INT   = "INT"   // 114514
+	IDENT  = "IDENT" // add, foobar, x, y, ...
+	INT    = "INT"   // 114514
 	STRING = "STRING"
 
 	ASSIGN   = "="
@@ -32,10 +32,10 @@ const (
 	SEMICOLON = ";"
 	COLON     = ":"
 
-	LPAREN = "("
-	RPAREN = ")"
-	LBRACE = "{"
-	RBRACE = "}"
+	LPAREN   = "("
+	RPAREN   = ")"
+	LBRACE   = "{"
+	RBRACE   = "}"
 	LBRACKET = "["
 	RBRACKET = "]"
 

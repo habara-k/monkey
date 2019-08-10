@@ -124,7 +124,7 @@ func (ao *Array) Inspect() string {
 }
 
 type HashKey struct {
-	Type ObjectType
+	Type  ObjectType
 	Value uint64
 }
 
@@ -152,7 +152,7 @@ func (s *String) HashKey() HashKey {
 }
 
 type HashPair struct {
-	Key Object
+	Key   Object
 	Value Object
 }
 
@@ -161,7 +161,7 @@ type Hash struct {
 }
 
 func (h *Hash) Type() ObjectType { return HASH_OBJ }
-func (h *Hash) Inspect() string  {
+func (h *Hash) Inspect() string {
 	var out bytes.Buffer
 
 	pairs := []string{}

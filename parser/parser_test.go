@@ -716,8 +716,8 @@ func TestParsingHashLiteralsStringKeys(t *testing.T) {
 	}
 
 	expected := map[string]int64{
-		"one": 1,
-		"two": 2,
+		"one":   1,
+		"two":   2,
 		"three": 3,
 	}
 
@@ -752,7 +752,7 @@ func TestParsingHashLiteralsBooleanKeys(t *testing.T) {
 	}
 
 	expected := map[string]int64{
-		"true": 1,
+		"true":  1,
 		"false": 2,
 	}
 
